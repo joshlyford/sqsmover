@@ -56,7 +56,7 @@ if __name__ == '__main__':
                         help='The AWS region of the queues (default: \'us-east-1\').')
     args = parser.parse_args()
     print('Starting ' + str(args.wrk) + ' workers ')
-    print('Using ' + str(args.prf) + ' profile from .aws/credentials ')
+    print('Using ' + str(args.prf) + ' profile from .aws/credentials file')
     for i in range(int(args.wrk)):
         p = multiprocessing.Process(target=worker,args=(i, args.prf, args.region, args.src, args.dst))
         jobs.append(p)

@@ -18,5 +18,5 @@ optional arguments:
 
 
 ```console
-./sqsmover.py -s sqs-dead-letter-queue-name -d sqs-worker-queue -w 5 -p alternateprofile
+❯ ./sqsmover.py -s sqs-dead-letter-queue-name -d sqs-worker-queue -w 5 -p alternateprofile
 ```
