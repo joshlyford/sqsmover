@@ -7,7 +7,7 @@ import multiprocessing
 
 
 def worker(num, profile, region, src, dst):
-    print('Worker Starting', num)
+    print('Worker Starting', num+1)
     aws_region = region
     src_queue_name = src
     dst_queue_name = dst
@@ -30,7 +30,7 @@ def worker(num, profile, region, src, dst):
         messages = client.receive_message(QueueUrl=src_queue, MaxNumberOfMessages=10)
         if 'Messages' in messages:
             for src_message in messages['Messages']:
-                print(str(num) + ': Processing message ' + src_message['MessageId'])
+                print(str(num+1) + ': Processing message ' + src_message['MessageId'])
                 msg_body = src_message['Body']
                 client.send_message(QueueUrl=dst_queue, MessageBody=msg_body)
                 client.delete_message(QueueUrl=src_queue, ReceiptHandle=src_message['ReceiptHandle'])
