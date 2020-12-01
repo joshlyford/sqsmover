@@ -6,7 +6,7 @@ import argparse
 import multiprocessing
 
 
-def worker(num,region, src, dst):
+def worker(num, profile, region, src, dst):
     print('Worker Starting', num)
     aws_region = region
     src_queue_name = src
@@ -15,7 +15,7 @@ def worker(num,region, src, dst):
     print('Connecting to SQS...')
     print('Source ' + src_queue_name)
     print('Destination ' + dst_queue_name)
-    session = boto3.Session(profile_name='dto', region_name=aws_region)
+    session = boto3.Session(profile_name=str(profile), region_name=aws_region)
     client = session.client('sqs')
 
     print('Connected to SQS')
@@ -44,18 +44,21 @@ def worker(num,region, src, dst):
 if __name__ == '__main__':
     jobs = []
     parser = argparse.ArgumentParser(description="Migrate messages from SQS queues.")
-    parser.add_argument('-w', '--wrk', default=10,
-                        help='Number of workers to start. (default: 10)')
     parser.add_argument('-s', '--src', required=True,
                         help='Name of the source queue.')
     parser.add_argument('-d', '--dst', required=True,
                         help='Name of the destination queue.')
+    parser.add_argument('-w', '--wrk', default=10,
+                        help='Number of workers to start (default: 10).')
+    parser.add_argument('-p', '--prf', default='default',
+                        help='AWS Credentials Profile to run as (default: default).')
     parser.add_argument('--region', default='us-east-1',
                         help='The AWS region of the queues (default: \'us-east-1\').')
     args = parser.parse_args()
     print('Starting ' + str(args.wrk) + ' workers ')
+    print('Using ' + str(args.prf) + ' profile from .aws/credentials ')
     for i in range(int(args.wrk)):
-        p = multiprocessing.Process(target=worker,args=(i, args.region,args.src,args.dst))
+        p = multiprocessing.Process(target=worker,args=(i, args.prf, args.region, args.src, args.dst))
         jobs.append(p)
         p.start()
 
